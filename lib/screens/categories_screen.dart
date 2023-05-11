@@ -12,6 +12,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: ElevatedButton(
+            onPressed: () {},
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         title: Text("Categories"),
       ),
       body: Center(child: Text("Welcome to Categorize Screen")),
