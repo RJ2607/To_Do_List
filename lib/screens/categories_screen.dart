@@ -14,7 +14,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       appBar: AppBar(
         leading: ElevatedButton(
             onPressed: () {},
-            child: Icon(
+            child: Icon
               Icons.arrow_back,
               color: Colors.white,
             )),
