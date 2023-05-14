@@ -23,7 +23,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       body: Center(child: Text("Welcome to Categorize Screen")),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: Icon(Icons.add),
+        child: Icon(Icons.ad),
       ),
     );
   }
