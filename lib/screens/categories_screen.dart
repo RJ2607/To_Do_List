@@ -16,7 +16,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             onPressed: () {},
             child: Icon(
               Icons.arrow_back,
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: Colors.white,
             )),
         title: Text("Categories"),
       ),
