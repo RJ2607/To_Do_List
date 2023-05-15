@@ -1,6 +1,9 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:project/screens/home_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -8,12 +11,24 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  _showFormDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (param) {
+          return AlertDialog(
+            title: Text('categories form'),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => HomeScreen())),
             child: Icon(
               Icons.arrow_back,
               color: Colors.white,
@@ -22,7 +37,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
       body: Center(child: Text("Welcome to Categorize Screen")),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _showFormDialog(context);
+        },
         child: Icon(Icons.add),
       ),
     );
