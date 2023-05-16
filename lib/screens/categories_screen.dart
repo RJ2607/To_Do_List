@@ -15,7 +15,26 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         barrierDismissible: true,
         builder: (param) {
           return AlertDialog(
-            title: Text('categories form'),
+            actions: <Widget>[],
+            title: Text('Categories form'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Write a category",
+                      labelText: "Category",
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Write a description",
+                      labelText: "Description",
+                    ),
+                  )
+                ],
+              ),
+            ),
           );
         });
   }
