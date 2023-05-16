@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:project/screens/home_screen.dart';
+import 'package:flutter/src/widgets/basic.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -15,7 +17,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         barrierDismissible: true,
         builder: (param) {
           return AlertDialog(
-            actions: <Widget>[],
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {},
+                child: Text("Cancel"),
+                style: TextButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Colors.red),
+              ),
+              TextButton(onPressed: () {}, child: Text("Save"))
+            ],
             title: Text('Categories form'),
             content: SingleChildScrollView(
               child: Column(
