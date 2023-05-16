@@ -19,12 +19,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           return AlertDialog(
             actions: <Widget>[
               TextButton(
-                onPressed: () {},
+                onPressed: () => Navigator.pop(context),
                 child: Text("Cancel"),
                 style: TextButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Colors.red),
               ),
-              TextButton(onPressed: () {}, child: Text("Save"))
+              TextButton(
+                onPressed: () {},
+                child: Text("Save"),
+                style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.lightGreen),
+              )
             ],
             title: Text('Categories form'),
             content: SingleChildScrollView(
