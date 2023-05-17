@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:project/models/category.dart';
 import 'package:project/screens/home_screen.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:project/services/category_service.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -13,6 +15,10 @@ class CategoriesScreen extends StatefulWidget {
 class _CategoriesScreenState extends State<CategoriesScreen> {
   var _categorynamecontroller = TextEditingController();
   var _categorydescriptioncontroller = TextEditingController();
+
+  var _category = Category();
+  var _categoryService = CategoryService();
+
   _showFormDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -27,7 +33,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     foregroundColor: Colors.white, backgroundColor: Colors.red),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  _category.name = _categorynamecontroller.text;
+                  _category.description = _categorydescriptioncontroller.text;
+                },
                 child: Text("Save"),
                 style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
