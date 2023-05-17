@@ -36,6 +36,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 onPressed: () {
                   _category.name = _categorynamecontroller.text;
                   _category.description = _categorydescriptioncontroller.text;
+                  _categoryService.saveCategory(_category);
                 },
                 child: Text("Save"),
                 style: TextButton.styleFrom(
