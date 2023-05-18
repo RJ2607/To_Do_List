@@ -33,10 +33,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     foregroundColor: Colors.white, backgroundColor: Colors.red),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   _category.name = _categorynamecontroller.text;
                   _category.description = _categorydescriptioncontroller.text;
-                  _categoryService.saveCategory(_category);
+
+                  var result = await _categoryService.saveCategory(_category);
+                  print(result);
                 },
                 child: Text("Save"),
                 style: TextButton.styleFrom(
