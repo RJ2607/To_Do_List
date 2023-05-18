@@ -21,7 +21,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   _showFormDialog(BuildContext context) {
     return showDialog(
-        context: context,
+        context: ,
         barrierDismissible: true,
         builder: (param) {
           return AlertDialog(
