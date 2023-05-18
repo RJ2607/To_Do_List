@@ -1,8 +1,14 @@
 import 'package:project/models/category.dart';
+import 'package:project/repositories/repository.dart';
 
 class CategoryService {
-  saveCategory(Category category) {
-    print(category.name);
-    print(category.description);
+  late repository _repository;
+
+  CategoryService() {
+    _repository = repository();
+  }
+
+  saveCategory(Category category) async {
+    return await _repository.insertData("category", category.categoryMap());
   }
 }
