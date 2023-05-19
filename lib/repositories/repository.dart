@@ -3,7 +3,7 @@ import 'package:project/repositories/database_connection.dart';
 import 'package:sqflite/sqflite.dart';
 
 class repository {
-  late DatabaseConnection _databaseConnection;
+  late DatabaseConnection _databaseConnection = DatabaseConnection();
 
   Repository() {
     _databaseConnection = DatabaseConnection();

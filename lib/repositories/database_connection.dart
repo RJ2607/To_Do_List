@@ -13,6 +13,6 @@ class DatabaseConnection {
 
   _onCreatingDatabase(Database database, int version) async {
     await database.execute(
-        "CREATE TABLE category(id INTEGER PRIMARY KEY, name TEXT, description TEXT)");
+        "CREATE TABLE category(name TEXT PRIMARY KEY, description TEXT)");
   }
 }
