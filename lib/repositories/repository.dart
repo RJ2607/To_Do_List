@@ -21,4 +21,10 @@ class repository {
     var connection = await database;
     return await connection?.insert(Table, data);
   }
+
+  //read data from table
+  readDate(Table) async {
+    var connection = await database;
+    return await connection!.query(Table);
+  }
 }
