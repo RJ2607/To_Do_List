@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:project/models/category.dart';
 import 'package:project/screens/home_screen.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:project/services/category_service.dart';
+
+import 'sql_helper.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -13,128 +13,178 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  var _categorynamecontroller = TextEditingController();
-  var _categorydescriptioncontroller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        // Remove the debug banner
+        debugShowCheckedModeBanner: false,
+        title: 'SQLITE',
+        theme: ThemeData(
+          primarySwatch: Colors.orange,
+        ),
+        home: const HomePage());
+  }
+}
 
-  var _category = Category();
-  var _categoryService = CategoryService();
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
-  List<Category> _categoryList = <Category>[];
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // All journals
+  List<Map<String, dynamic>> _journals = [];
+
+  bool _isLoading = true;
+  // This function is used to fetch all data from the database
+  void _refreshJournals() async {
+    final data = await SQLHelper.getItems();
+    setState(() {
+      _journals = data;
+      _isLoading = false;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    getAllCategories();
+    _refreshJournals(); // Loading the diary when the app starts
   }
 
-  getAllCategories() async {
-    _categoryList = <Category>[];
-    var categories = await _categoryService.readCategory();
-    categories.forEach((category) {
-      setState(() {
-        var categoryModel = Category();
-        categoryModel.name = category["name"];
-        categoryModel.description = category["description"];
-        _categoryList.add(categoryModel);
-      });
-    });
-  }
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
-  _showFormDialog(BuildContext context) {
-    return showDialog(
+  // This function will be triggered when the floating button is pressed
+  // It will also be triggered when you want to update an item
+  void _showForm(int? id) async {
+    if (id != null) {
+      // id == null -> create new item
+      // id != null -> update an existing item
+      final existingJournal =
+          _journals.firstWhere((element) => element['id'] == id);
+      _titleController.text = existingJournal['title'];
+      _descriptionController.text = existingJournal['description'];
+    }
+
+    showModalBottomSheet(
         context: context,
-        barrierDismissible: true,
-        builder: (param) {
-          return AlertDialog(
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text("Cancel"),
-                style: TextButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.red),
+        elevation: 5,
+        isScrollControlled: true,
+        builder: (_) => Container(
+              padding: EdgeInsets.only(
+                top: 15,
+                left: 15,
+                right: 15,
+                // this will prevent the soft keyboard from covering the text fields
+                bottom: MediaQuery.of(context).viewInsets.bottom + 120,
               ),
-              TextButton(
-                onPressed: () async {
-                  _category.name = _categorynamecontroller.text;
-                  _category.description = _categorydescriptioncontroller.text;
-
-                  var result = await _categoryService.saveCategory(_category);
-                  print(result);
-                },
-                child: Text("Save"),
-                style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.lightGreen),
-              )
-            ],
-            title: Text('Categories form'),
-            content: SingleChildScrollView(
               child: Column(
-                children: <Widget>[
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
                   TextField(
-                    controller: _categorynamecontroller,
-                    decoration: InputDecoration(
-                      hintText: "Write a category",
-                      labelText: "Category",
-                    ),
+                    controller: _titleController,
+                    decoration: const InputDecoration(hintText: 'Title'),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   TextField(
-                    controller: _categorydescriptioncontroller,
-                    decoration: InputDecoration(
-                      hintText: "Write a description",
-                      labelText: "Description",
-                    ),
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(hintText: 'Description'),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Save new journal
+                      if (id == null) {
+                        await _addItem();
+                      }
+
+                      if (id != null) {
+                        await _updateItem(id);
+                      }
+
+                      // Clear the text fields
+                      _titleController.text = '';
+                      _descriptionController.text = '';
+
+                      // Close the bottom sheet
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(id == null ? 'Save' : 'Update'),
                   )
                 ],
               ),
-            ),
-          );
-        });
+            ));
+  }
+
+// Insert a new journal to the database
+  Future<void> _addItem() async {
+    await SQLHelper.createItem(
+        _titleController.text, _descriptionController.text);
+    _refreshJournals();
+  }
+
+  // Update an existing journal
+  Future<void> _updateItem(int id) async {
+    await SQLHelper.updateItem(
+        id, _titleController.text, _descriptionController.text);
+    _refreshJournals();
+  }
+
+  // Delete an item
+  void _deleteItem(int id) async {
+    await SQLHelper.deleteItem(id);
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Successfully deleted a journal!'),
+    ));
+    _refreshJournals();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: ElevatedButton(
-            onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => HomeScreen())),
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
-        title: Text("Categories"),
+        title: const Text('SQL'),
       ),
-      body: ListView.builder(
-          itemCount: _categoryList.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
-              child: Card(
-                elevation: 6,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemCount: _journals.length,
+              itemBuilder: (context, index) => Card(
+                color: Colors.orange[200],
+                margin: const EdgeInsets.all(15),
                 child: ListTile(
-                  leading: IconButton(icon: Icon(Icons.edit), onPressed: () {}),
-                  title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(_categoryList[index].name),
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            ))
-                      ]),
-                  subtitle: Text(_categoryList[index].description),
-                ),
+                    title: Text(_journals[index]['title']),
+                    subtitle: Text(_journals[index]['description']),
+                    trailing: SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _showForm(_journals[index]['id']),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () =>
+                                _deleteItem(_journals[index]['id']),
+                          ),
+                        ],
+                      ),
+                    )),
               ),
-            );
-          }),
+            ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showFormDialog(context);
-        },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
+        onPressed: () => _showForm(null),
       ),
     );
   }
