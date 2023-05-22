@@ -73,6 +73,9 @@ class _HomePageState extends State<HomePage> {
         elevation: 5,
         isScrollControlled: true,
         builder: (param) => Container(
+              decoration: BoxDecoration(
+                  gradient:
+                      LinearGradient(colors: [Colors.blue, Colors.blueGrey])),
               padding: EdgeInsets.only(
                 top: 15,
                 left: 15,
@@ -98,36 +101,44 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text("cancel"),
-                    style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.red),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      // Save new journal
-                      if (id == null) {
-                        await _addItem();
-                      }
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("cancel"),
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.red),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          // Save new journal
+                          if (id == null) {
+                            await _addItem();
+                          }
 
-                      if (id != null) {
-                        await _updateItem(id);
-                      }
+                          if (id != null) {
+                            await _updateItem(id);
+                          }
 
-                      // Clear the text fields
-                      _titleController.text = '';
-                      _descriptionController.text = '';
+                          // Clear the text fields
+                          _titleController.text = '';
+                          _descriptionController.text = '';
 
-                      // Close the bottom sheet
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(id == null ? 'Save' : 'Update'),
-                    style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.lightGreen),
-                  ),
+                          // Close the bottom sheet
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(id == null ? 'Save' : 'Update'),
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.lightGreen),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ));
