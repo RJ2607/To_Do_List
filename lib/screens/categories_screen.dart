@@ -20,7 +20,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         debugShowCheckedModeBanner: false,
         title: 'SQLITE',
         theme: ThemeData(
-          primarySwatch: Colors.orange,
+          primarySwatch: Colors.blue,
         ),
         home: const HomePage());
   }
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         context: context,
         elevation: 5,
         isScrollControlled: true,
-        builder: (_) => Container(
+        builder: (param) => Container(
               padding: EdgeInsets.only(
                 top: 15,
                 left: 15,
@@ -98,7 +98,14 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("cancel"),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.red),
+                  ),
+                  TextButton(
                     onPressed: () async {
                       // Save new journal
                       if (id == null) {
@@ -117,7 +124,10 @@ class _HomePageState extends State<HomePage> {
                       Navigator.of(context).pop();
                     },
                     child: Text(id == null ? 'Save' : 'Update'),
-                  )
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.lightGreen),
+                  ),
                 ],
               ),
             ));
@@ -150,7 +160,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SQL'),
+        leading: ElevatedButton(
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => HomeScreen())),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
+        title: Text("Categories"),
       ),
       body: _isLoading
           ? const Center(
